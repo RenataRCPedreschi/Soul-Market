@@ -1,5 +1,6 @@
 const {model, Schema} = require ("mongoose");
 
+
 const Produto = model(
     "produto",
     new Schema ({
@@ -31,10 +32,8 @@ const Produto = model(
             type: String,
             required: true,
         },
-       /*  imgProdutos:{
-            type: String,
-        } */
+     
     })
-)
+) 
 
 module.exports = Produto;
