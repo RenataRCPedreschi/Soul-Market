@@ -1,36 +1,44 @@
 const { Router } = require("express");
 const Produto = require("../models/produto");
 const Joi = require("joi");
+const { Types } = require("mongoose");
 
 const router = Router();
 
 const produtoSchema = Joi.object({
-  nome: Joi.string().required().messages({
-    "any.required": "O campo nome é obrigatório",
-    "string.empty": "O campo nome não pode estar vazio",
-  }),
-  descricao: Joi.string().required().messages({
-    "any.required": "O campo descrição é obrigatório",
-    "string.empty": "O campo descrição não pode estar vazio",
-  }),
-  qtde: Joi.number().integer().min(0).required().messages({
-    "any.required": "O campo quantidade é obrigatório",
-    "string.empty": "O campo quantidade não pode estar vazio",
-  }),
-  preco: Joi.number().positive().required().messages({
-    "any.required": "O campo preço é obrigatório",
-    "string.empty": "O campo preço não pode estar vazio",
-  }),
-  desconto: Joi.number().min(0).max(1).required().messages({
-    "any.required": "O campo desconto é obrigatório",
-    "string.empty": "O campo desconto não pode estar vazio",
-  }),
-  dataDesconto: Joi.date().iso(),
-  categoria: Joi.string().required().messages({
-    "any.required": "O campo de data do desconto é obrigatório",
-    "string.empty": "O campo data do desconto não pode estar vazio",
-  }),
-});
+    nome: Joi.string().required().messages({
+      "any.required": "O campo nome é obrigatório",
+      "string.empty": "O campo nome não pode estar vazio",
+    }),
+    descricao: Joi.string().required().messages({
+      "any.required": "O campo descrição é obrigatório",
+      "string.empty": "O campo descrição não pode estar vazio",
+    }),
+    qtde: Joi.number().integer().min(0).required().messages({
+      "any.required": "O campo quantidade é obrigatório",
+      "string.empty": "O campo quantidade não pode estar vazio",
+      "number.integer": "A quantidade deve ser um número inteiro",
+      "number.min": "A quantidade não pode ser menor que 0",
+    }),
+    preco: Joi.number().positive().required().messages({
+      "any.required": "O campo preço é obrigatório",
+      "string.empty": "O campo preço não pode estar vazio",
+      "number.positive": "O preço deve ser um número positivo",
+    }),
+    desconto: Joi.number().min(0).required().messages({
+      "any.required": "O campo desconto é obrigatório",
+      "string.empty": "O campo desconto não pode estar vazio",
+      "number.min": "O desconto não pode ser menor que 0",
+      
+    }),
+    dataDesconto: Joi.date().iso().messages({
+      "date.iso": "A data do desconto deve estar no formato ISO (aaaa-mm-dd)",
+    }),
+    categoria: Joi.string().required().messages({
+      "any.required": "O campo categoria é obrigatório",
+      "string.empty": "O campo categoria não pode estar vazio",
+    }),
+  });
 
 //Inserção de produto
 router.post("/produtos", async (req, res) => {
@@ -68,6 +76,10 @@ router.get("/produtos", async (req, res) => {
 router.get("/produto/:id", async (req, res) => {
   try {
     const { id } = req.params;
+    //validação id get
+    if (!Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "ID inválido!" });
+      }
     const produtoExistente = await Produto.findById(id);
     if (produtoExistente) {
       res.json(produtoExistente);
@@ -83,9 +95,14 @@ router.get("/produto/:id", async (req, res) => {
 //Editar produto
 router.put("/produto/:id", async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params;   
+    //validação put
+      const { error, value } = produtoSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message});
+    }
     const { nome, descricao, qtde, preco, desconto, dataDesconto, categoria } =
-      req.body;
+      value;
     const produtoExistente = await Produto.findByIdAndUpdate(id, {
       nome,
       descricao,
@@ -112,6 +129,11 @@ router.put("/produto/:id", async (req, res) => {
 router.delete("/produto/:id", async (req, res) => {
   try {
     const { id } = req.params;
+    //validação id delete
+    if (!Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "ID inválido!" });
+      }
+
     const produtoExistente = await Produto.findByIdAndDelete(id);
 
     const produtosRestantes = await Produto.find();
