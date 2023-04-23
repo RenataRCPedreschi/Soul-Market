@@ -31,8 +31,10 @@ const Produto = model(
             type: String,
             required: true,
         },
-        imgProdutos:{
+       /*  imgProdutos:{
             type: String,
-        }
+        } */
     })
 )
+
+module.exports = Produto;
