@@ -31,8 +31,7 @@ const Produto = model(
         categoria:{
             type: String,
             required: true,
-        },
-     
+        }   
     })
 ) 
 
