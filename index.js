@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 //Configuração do APP
 const app = express();
 app.use(express.json());
-
+app.use(express.static("uploads"))
 
 
 

@@ -2,15 +2,15 @@
  * @swagger
  * components:
  *   schemas:
- *     Produtos: 
+ *     Produtos:
  *       type: object
  *       required:
  *       properties:
- *         nome: 
- *           type: string  
- *           required: true  
- *           validate: {messages:'any.required': 'O campo nome é obrigatório', 'string.empty': 'O campo nome não pode estar vazio'} 
- *           description: Nome do produto 
+ *         nome:
+ *           type: string
+ *           required: true
+ *           validate: {messages:'any.required': 'O campo nome é obrigatório', 'string.empty': 'O campo nome não pode estar vazio'}
+ *           description: Nome do produto
  *         descricao:
  *           type: string
  *           required: true
@@ -29,22 +29,22 @@
  *         desconto:
  *           type: number
  *           required: true
- *           unique: true
  *           validate: {messages:'any.required': 'O campo desconto é obrigatório', 'string.empty': 'O campo desconto não pode estar vazio', 'number.min': 'O desconto não pode ser menor que 0'}
  *           description: Desconto do produto
  *         dataDesconto:
  *           type: date
  *           required: true
- *           unique: true
  *           validate: {messages:'date.iso': 'A data do desconto deve estar no formato ISO (aaaa-mm-dd)'}
  *           description: Data do desconto do produto
  *         categoria:
  *           type: string
  *           required: true
- *           unique: true
  *           validate: {messages:'any.required': 'O campo categoria é obrigatório', 'string.empty': 'O campo categoria não pode estar vazio'}
  *           description: Categoria do produto
- *       example:  
+ *         imagem:
+ *           type: string
+ *           description: Imagem do produto
+ *       example:
  *         nome: Contra Baixo
  *         descricao: Contra Baixo 4 Cordas Land Preto+Capa+Correia+Afinador
  *         qtde: 25
@@ -52,8 +52,10 @@
  *         desconto: 150.00
  *         dataDesconto: 2023-04-25
  *         categoria: Instrumento de corda
- *        
+ *         imagem: link imagem
+ *
  */
+
 
 
 
@@ -61,8 +63,24 @@ const { Router } = require('express');
 const Produto = require('../models/produto');
 const Joi = require('joi');
 const { Types } = require('mongoose');
-
+const multer = require ("multer");
+const path = require("path");
 const router = Router();
+
+// config multer
+const storage = multer.diskStorage({
+  destination:(req, file, callback) => {
+    callback(null, path.resolve("uploads"));
+  },
+  filename: (req, file, callback)=>{
+    const time = new Date().getTime();
+
+  callback(null, `${time}_${file.originalname}`)
+  },
+});
+
+const upload = multer({ storage: storage});
+
 
 const produtoSchema = Joi.object({
   nome: Joi.string().required().messages({
@@ -131,26 +149,17 @@ const produtoSchema = Joi.object({
  */
 
 
-
-
 //Inserção de produto
-router.post('/produtos', async (req, res) => {
+router.post('/produtos', upload.single('file'), async (req, res) => {
   try {
     const { error, value } = produtoSchema.validate(req.body);
+    const file = req.file;
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
     const { nome, descricao, qtde, preco, desconto, dataDesconto, categoria } =
       value;
-    const produto = new Produto({
-      nome,
-      descricao,
-      qtde,
-      preco,
-      desconto,
-      dataDesconto,
-      categoria
-    });
+    const produto = new Produto({ nome, descricao, qtde, preco, desconto, dataDesconto, categoria, imagem: file.filename });
     await produto.save();
     res.json(produto);
   } catch (err) {
@@ -158,6 +167,7 @@ router.post('/produtos', async (req, res) => {
     res.status(500).json({ message: 'Um erro aconteceu.' });
   }
 });
+
 
 /**
  * @swagger
@@ -183,7 +193,6 @@ router.post('/produtos', async (req, res) => {
  *               $ref: '#/components/schemas/Produtos'
  *  
  */
-
 
 
 //Listar todos produtos com filtros
@@ -272,6 +281,7 @@ router.get('/produto/:id', async (req, res) => {
 });
 
 
+
 /**
  * @swagger
  * tags:
@@ -310,14 +320,13 @@ router.get('/produto/:id', async (req, res) => {
  */
 
 
-
-
 //Editar produto
-router.put('/produto/:id', async (req, res) => {
+router.put('/produto/:id', upload.single('file'), async (req, res) => {
   try {
     const { id } = req.params;
     //validação put
     const { error, value } = produtoSchema.validate(req.body);
+    const file = req.file;
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
@@ -330,7 +339,8 @@ router.put('/produto/:id', async (req, res) => {
       preco,
       desconto,
       dataDesconto,
-      categoria
+      categoria,
+      imagem: file.filename 
     });
 
     if (produtoExistente) {
@@ -382,8 +392,6 @@ router.put('/produto/:id', async (req, res) => {
  *               $ref: '#/components/schemas/Produtos'
  *  
  */
-
-
 
 
 //deletar produtos
