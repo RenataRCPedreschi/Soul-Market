@@ -103,7 +103,7 @@ const produtoSchema = Joi.object({
  * @swagger
  * tags:
  *   name: Produtos
- *   description: O API de Produtos
+ *   description: Uma API de Produtos
  * /produtos:
  *   post:
  *     summary: Cria um produto
@@ -122,7 +122,7 @@ const produtoSchema = Joi.object({
  *             schema:
  *               $ref: '#/produtos'
  *       500:
- *         description: Um erro aconteceu..
+ *         description: Um erro aconteceu
  *         content:
  *           application/json:
  *             schema:
@@ -163,7 +163,7 @@ router.post('/produtos', async (req, res) => {
  * @swagger
  * tags:
  *   name: Produtos
- *   description: O API de Produtos
+ *   description: Uma API de Produtos
  * /produtos:
  *   get:
  *     summary: Lista todos os produtos
@@ -176,7 +176,7 @@ router.post('/produtos', async (req, res) => {
  *             $ref: '#/produtos'
  *     responses:
  *       500:
- *         description: Um erro aconteceu.
+ *         description: Um erro aconteceu
  *         content:
  *           application/json:
  *             schema:
@@ -217,7 +217,7 @@ router.get('/produtos', async (req, res) => {
  * @swagger
  * tags:
  *   name: Produtos
- *   description: O API produtos
+ *   description: Uma API de produtos
  * /produto/{id}:
  *   get:
  *     summary: Lista um produto
@@ -276,11 +276,11 @@ router.get('/produto/:id', async (req, res) => {
  * @swagger
  * tags:
  *   name: Produtos
- *   description: O API produtos
+ *   description: Uma API de produtos
  * /produto/{id}:
  *   put:
  *     summary: Edita um produto
- *     tags: [Produto]
+ *     tags: [Produtos]
  *     requestBody:
  *       required: true
  *       content:
@@ -350,7 +350,7 @@ router.put('/produto/:id', async (req, res) => {
  * @swagger
  * tags:
  *   name: Produtos
- *   description: O API produtos
+ *   description: Uma API produtos
  * /produto/{id}:
  *   delete:
  *     summary: Deleta um produto
