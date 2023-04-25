@@ -1,3 +1,62 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Produtos: 
+ *       type: object
+ *       required:
+ *       properties:
+ *         nome: 
+ *           type: string  
+ *           required: true  
+ *           validate: {messages:'any.required': 'O campo nome é obrigatório', 'string.empty': 'O campo nome não pode estar vazio'} 
+ *           description: Nome do produto 
+ *         descricao:
+ *           type: string
+ *           required: true
+ *           validate: {messages:'any.required': 'O campo descrição é obrigatório', 'string.empty': 'O campo descrição não pode estar vazio'}
+ *           description: Descrição do produto
+ *         qtde:
+ *           type: number
+ *           required: true
+ *           validate: {messages:'any.required': 'O campo quantidade é obrigatório', 'string.empty': 'O campo quantidade não pode estar vazio', 'number.integer': 'A quantidade deve ser um número inteiro', 'number.min': 'A quantidade não pode ser menor que 0'}
+ *           description: Quantidade do produto
+ *         preco:
+ *           type: number
+ *           required: true
+ *           validate: {messages:'any.required': 'O campo preço é obrigatório', 'string.empty': 'O campo preço não pode estar vazio', 'number.positive': 'O preço deve ser um número positivo'}
+ *           description: preço do produto
+ *         desconto:
+ *           type: number
+ *           required: true
+ *           unique: true
+ *           validate: {messages:'any.required': 'O campo desconto é obrigatório', 'string.empty': 'O campo desconto não pode estar vazio', 'number.min': 'O desconto não pode ser menor que 0'}
+ *           description: Desconto do produto
+ *         dataDesconto:
+ *           type: date
+ *           required: true
+ *           unique: true
+ *           validate: {messages:'date.iso': 'A data do desconto deve estar no formato ISO (aaaa-mm-dd)'}
+ *           description: Data do desconto do produto
+ *         categoria:
+ *           type: string
+ *           required: true
+ *           unique: true
+ *           validate: {messages:'any.required': 'O campo categoria é obrigatório', 'string.empty': 'O campo categoria não pode estar vazio'}
+ *           description: Categoria do produto
+ *       example:  
+ *         nome: Contra Baixo
+ *         descricao: Contra Baixo 4 Cordas Land Preto+Capa+Correia+Afinador
+ *         qtde: 25
+ *         preco: 1200.00
+ *         desconto: 150.00
+ *         dataDesconto: 2023-04-25
+ *         categoria: Instrumento de corda
+ *        
+ */
+
+
+
 const { Router } = require('express');
 const Produto = require('../models/produto');
 const Joi = require('joi');
@@ -39,6 +98,41 @@ const produtoSchema = Joi.object({
   })
 });
 
+
+/**
+ * @swagger
+ * tags:
+ *   name: Produtos
+ *   description: O API de Produtos
+ * /produtos:
+ *   post:
+ *     summary: Cria um produto
+ *     tags: [Produtos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/produtos'
+ *     responses:
+ *       400:
+ *         description: Mensagem personalizada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/produtos'
+ *       500:
+ *         description: Um erro aconteceu..
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/produtos'
+ *  
+ */
+
+
+
+
 //Inserção de produto
 router.post('/produtos', async (req, res) => {
   try {
@@ -65,6 +159,33 @@ router.post('/produtos', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * tags:
+ *   name: Produtos
+ *   description: O API de Produtos
+ * /produtos:
+ *   get:
+ *     summary: Lista todos os produtos
+ *     tags: [Produtos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/produtos'
+ *     responses:
+ *       500:
+ *         description: Um erro aconteceu.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/produtos'
+ *  
+ */
+
+
+
 //Listar todos produtos com filtros
 router.get('/produtos', async (req, res) => {
   try {
@@ -89,13 +210,47 @@ router.get('/produtos', async (req, res) => {
   }
 });
 
-/* 
-//Listar todos produtos
-router.get("/produtos", async (req, res) => {
-  const produtos = await Produto.find();
-  res.json(produtos);
-});
+
+
+
+/**
+ * @swagger
+ * tags:
+ *   name: Produtos
+ *   description: O API produtos
+ * /produto/{id}:
+ *   get:
+ *     summary: Lista um produto
+ *     tags: [Produtos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/produto/{id}'
+ *     responses:
+ *       400:
+ *         description: Id inválido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/routes/produto/{id}'
+ *       404:
+ *         description: Produto não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/routes/produto/{id}'
+ *       500:
+ *         description: Um erro aconteceu
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/produto/{id}'
+ *  
  */
+
+
 //Listar um produto
 router.get('/produto/:id', async (req, res) => {
   try {
@@ -115,6 +270,47 @@ router.get('/produto/:id', async (req, res) => {
     res.status(500).json({ message: 'Um erro aconteceu!' });
   }
 });
+
+
+/**
+ * @swagger
+ * tags:
+ *   name: Produtos
+ *   description: O API produtos
+ * /produto/{id}:
+ *   put:
+ *     summary: Edita um produto
+ *     tags: [Produto]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/produto/{id}'
+ *     responses:
+ *       400:
+ *         description: Mensagem personalizada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/produto/{id}'
+ *       404:
+ *         description: Produto não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '/produto/{id}'
+ *       500:
+ *         description: Um erro aconteceu
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/produto/{id}'
+ *  
+ */
+
+
+
 
 //Editar produto
 router.put('/produto/:id', async (req, res) => {
@@ -147,6 +343,48 @@ router.put('/produto/:id', async (req, res) => {
     res.status(500).json({ message: 'Um erro aconteceu!' });
   }
 });
+
+
+
+/**
+ * @swagger
+ * tags:
+ *   name: Produtos
+ *   description: O API produtos
+ * /produto/{id}:
+ *   delete:
+ *     summary: Deleta um produto
+ *     tags: [Produtos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/produto/{id}'
+ *     responses:
+ *       400:
+ *         description: Id inválido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/produto/{id}'
+ *       404:
+ *         description: Produto não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/produto/{id}'
+ *       500:
+ *         description: Um erro aconteceu
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/produto/{id}'
+ *  
+ */
+
+
+
 
 //deletar produtos
 
