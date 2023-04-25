@@ -113,20 +113,20 @@ const produtoSchema = Joi.object({
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/produtos'
+ *             $ref: '#/components/schemas/Produtos'
  *     responses:
  *       400:
  *         description: Mensagem personalizada
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/produtos'
+ *               $ref: '#/components/schemas/Produtos'
  *       500:
  *         description: Um erro aconteceu
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/produtos'
+ *               $ref: '#/components/schemas/Produtos'
  *  
  */
 
@@ -173,14 +173,14 @@ router.post('/produtos', async (req, res) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/produtos'
+ *             $ref: '#/components/schemas/Produtos'
  *     responses:
  *       500:
  *         description: Um erro aconteceu
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/produtos'
+ *               $ref: '#/components/schemas/Produtos'
  *  
  */
 
@@ -227,26 +227,26 @@ router.get('/produtos', async (req, res) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/produto/{id}'
+ *             $ref: '#/components/schemas/Produtos'
  *     responses:
  *       400:
  *         description: Id inválido
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/routes/produto/{id}'
+ *               $ref: '#/components/schemas/Produtos'
  *       404:
  *         description: Produto não encontrado
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/routes/produto/{id}'
+ *               $ref: '#/components/schemas/Produtos'
  *       500:
  *         description: Um erro aconteceu
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/produto/{id}'
+ *               $ref: '#/components/schemas/Produtos'
  *  
  */
 
@@ -286,26 +286,26 @@ router.get('/produto/:id', async (req, res) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/produto/{id}'
+ *             $ref: '#/components/schemas/Produtos'
  *     responses:
  *       400:
  *         description: Mensagem personalizada
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/produto/{id}'
+ *               $ref: '#/components/schemas/Produtos'
  *       404:
  *         description: Produto não encontrado
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '/produto/{id}'
+ *               $ref: '#/components/schemas/Produtos'
  *       500:
  *         description: Um erro aconteceu
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/produto/{id}'
+ *               $ref: '#/components/schemas/Produtos'
  *  
  */
 
@@ -360,26 +360,26 @@ router.put('/produto/:id', async (req, res) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/produto/{id}'
+ *             $ref: '#/components/schemas/Produtos'
  *     responses:
  *       400:
  *         description: Id inválido
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/produto/{id}'
+ *               $ref: '#/components/schemas/Produtos'
  *       404:
  *         description: Produto não encontrado
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/produto/{id}'
+ *               $ref: '#/components/schemas/Produtos'
  *       500:
  *         description: Um erro aconteceu
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/produto/{id}'
+ *               $ref: '#/components/schemas/Produtos'
  *  
  */
 
